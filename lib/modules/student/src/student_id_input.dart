@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class StudentIdInput extends StatelessWidget {
-  final TextEditingController? controller;
+  final TextEditingController controller;
 
-  const StudentIdInput({super.key, this.controller});
+  const StudentIdInput({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
