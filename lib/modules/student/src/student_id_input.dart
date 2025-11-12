@@ -40,7 +40,7 @@ class StudentIdInput extends StatelessWidget {
           return 'Please enter your student ID';
         }
 
-        final RegExp studentIdPattern = RegExp(r'^\d+[a-zA-Z]$');
+        final RegExp studentIdPattern = RegExp(r'^\d+[a-z]$');
 
         if (!studentIdPattern.hasMatch(value)) {
           return 'Student ID must be numbers followed by a letter (e.g., 23102891d)';
