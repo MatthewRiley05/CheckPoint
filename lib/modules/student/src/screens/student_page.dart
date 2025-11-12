@@ -1,4 +1,5 @@
 import 'package:checkpoint/modules/student/src/name_input.dart';
+import 'package:checkpoint/modules/student/src/student_id_input.dart';
 import 'package:flutter/material.dart';
 
 class StudentPage extends StatefulWidget {
@@ -9,11 +10,13 @@ class StudentPage extends StatefulWidget {
 }
 
 class _StudentPageState extends State<StudentPage> {
-  final TextEditingController controller = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController studentIdController = TextEditingController();
 
   @override
   void dispose() {
-    controller.dispose();
+    nameController.dispose();
+    studentIdController.dispose();
     super.dispose();
   }
 
@@ -26,7 +29,10 @@ class _StudentPageState extends State<StudentPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 16,
-            children: [NameInput(controller: controller)],
+            children: [
+              NameInput(controller: nameController),
+              StudentIdInput(controller: studentIdController),
+            ],
           ),
         ),
       ),
