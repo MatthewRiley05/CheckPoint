@@ -1,3 +1,4 @@
+import 'package:checkpoint/modules/host/src/attendance_table.dart';
 import 'package:checkpoint/modules/host/src/event_input.dart';
 import 'package:checkpoint/modules/host/src/host_button.dart';
 import 'package:checkpoint/modules/host/src/qr_code_display.dart';
@@ -54,6 +55,7 @@ class _HostPageState extends State<HostPage> {
                 eventData: _eventData ?? '',
                 isVisible: _isEventCreated,
               ),
+              AttendanceTable(attendanceData: const []),
             ],
           ),
         ),
