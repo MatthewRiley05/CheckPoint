@@ -31,7 +31,7 @@ class _HostPageState extends State<HostPage> {
   }
 
   void _validateForm() {
-    final isValid = eventController.text.isNotEmpty;
+    final isValid = eventController.text.trim().isNotEmpty;
     if (isValid != _isFormValid) {
       setState(() {
         _isFormValid = isValid;
