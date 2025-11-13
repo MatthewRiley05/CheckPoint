@@ -42,7 +42,7 @@ class _HostPageState extends State<HostPage> {
   void _createEvent() {
     setState(() {
       _isEventCreated = true;
-      _eventData = eventController.text;
+      _eventData = eventController.text.trim();
     });
   }
 
