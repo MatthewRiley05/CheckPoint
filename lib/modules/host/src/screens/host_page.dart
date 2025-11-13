@@ -1,4 +1,5 @@
 import 'package:checkpoint/modules/host/src/event_input.dart';
+import 'package:checkpoint/modules/host/src/host_button.dart';
 import 'package:flutter/material.dart';
 
 class HostPage extends StatefulWidget {
@@ -9,7 +10,23 @@ class HostPage extends StatefulWidget {
 }
 
 class _HostPageState extends State<HostPage> {
-  final TextEditingController controller = TextEditingController();
+  final TextEditingController eventController = TextEditingController();
+  bool _isFormValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    eventController.addListener(_validateForm);
+  }
+
+  void _validateForm() {
+    final isValid = eventController.text.isNotEmpty;
+    if (isValid != _isFormValid) {
+      setState(() {
+        _isFormValid = isValid;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +36,11 @@ class _HostPageState extends State<HostPage> {
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [EventInput(controller: controller)],
+            spacing: 16,
+            children: [
+              EventInput(controller: eventController),
+              HostButton(isFormValid: _isFormValid),
+            ],
           ),
         ),
       ),
