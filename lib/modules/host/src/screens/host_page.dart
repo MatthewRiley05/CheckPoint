@@ -23,6 +23,13 @@ class _HostPageState extends State<HostPage> {
     eventController.addListener(_validateForm);
   }
 
+  @override
+  void dispose() {
+    eventController.removeListener(_validateForm);
+    eventController.dispose();
+    super.dispose();
+  }
+
   void _validateForm() {
     final isValid = eventController.text.isNotEmpty;
     if (isValid != _isFormValid) {
