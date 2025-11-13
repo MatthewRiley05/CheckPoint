@@ -69,7 +69,6 @@ class _StudentPageState extends State<StudentPage> {
               children: [
                 NameInput(controller: nameController),
                 StudentIdInput(controller: studentIdController),
-                const SizedBox(height: 16),
                 FilledButton.icon(
                   onPressed: _isFormValid ? _openScanner : null,
                   icon: const Icon(Icons.qr_code_scanner),
