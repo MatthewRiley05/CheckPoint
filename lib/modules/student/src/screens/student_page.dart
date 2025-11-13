@@ -24,7 +24,10 @@ class _StudentPageState extends State<StudentPage> {
   }
 
   void _validateForm() {
-    final isValid = _formKey.currentState?.validate() ?? false;
+    // Check if fields are non-empty to enable/disable the button
+    // Actual validation is handled by autovalidateMode
+    final isValid = nameController.text.isNotEmpty && 
+                   studentIdController.text.isNotEmpty;
     if (isValid != _isFormValid) {
       setState(() {
         _isFormValid = isValid;
