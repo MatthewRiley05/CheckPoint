@@ -1,4 +1,5 @@
 import 'package:checkpoint/modules/student/src/name_input.dart';
+import 'package:checkpoint/modules/student/src/qr_scanner_button.dart';
 import 'package:checkpoint/modules/student/src/student_id_input.dart';
 import 'package:checkpoint/modules/student/src/screens/qr_scanner_screen.dart';
 import 'package:flutter/material.dart';
@@ -26,8 +27,8 @@ class _StudentPageState extends State<StudentPage> {
   void _validateForm() {
     // Check if fields are non-empty to enable/disable the button
     // Actual validation is handled by autovalidateMode
-    final isValid = nameController.text.isNotEmpty && 
-                   studentIdController.text.isNotEmpty;
+    final isValid =
+        nameController.text.isNotEmpty && studentIdController.text.isNotEmpty;
     if (isValid != _isFormValid) {
       setState(() {
         _isFormValid = isValid;
@@ -72,16 +73,9 @@ class _StudentPageState extends State<StudentPage> {
               children: [
                 NameInput(controller: nameController),
                 StudentIdInput(controller: studentIdController),
-                FilledButton.icon(
-                  onPressed: _isFormValid ? _openScanner : null,
-                  icon: const Icon(Icons.qr_code_scanner),
-                  label: const Text('Scan QR Code'),
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
-                    ),
-                  ),
+                QRScannerButton(
+                  openScanner: _openScanner,
+                  isFormValid: _isFormValid,
                 ),
               ],
             ),
