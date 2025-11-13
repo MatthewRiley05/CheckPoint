@@ -1,3 +1,4 @@
+import 'package:checkpoint/modules/host/src/event_input.dart';
 import 'package:flutter/material.dart';
 
 class HostPage extends StatefulWidget {
@@ -8,8 +9,20 @@ class HostPage extends StatefulWidget {
 }
 
 class _HostPageState extends State<HostPage> {
+  final TextEditingController controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Container());
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [EventInput(controller: controller)],
+          ),
+        ),
+      ),
+    );
   }
 }
