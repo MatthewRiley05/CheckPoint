@@ -74,7 +74,7 @@ class _StudentPageState extends State<StudentPage> {
                   onPressed: _isFormValid ? _openScanner : null,
                   icon: const Icon(Icons.qr_code_scanner),
                   label: const Text('Scan QR Code'),
-                  style: ElevatedButton.styleFrom(
+                  style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 32,
                       vertical: 16,
