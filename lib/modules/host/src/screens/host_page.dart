@@ -18,7 +18,7 @@ class _HostPageState extends State<HostPage> {
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [EventInput(controller: controller)],
           ),
         ),
