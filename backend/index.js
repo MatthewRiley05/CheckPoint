@@ -1,17 +1,22 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const jwt = require('jsonwebtoken');
-const express = require('express')
+const express = require('express');
+const cors = require('cors');
 
 const JWT_SECRET = 'my-secret-key';
-const app = express()
-const port = 3000
+const QR_EXPIRY = 120;  
+const app = express();
+const port = 3000;
+
+app.use(express.json()); 
+app.use(cors()); 
 
 const sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: ':memory:', // or './database.sqlite'
+    storage: './database.sqlite' 
 });
 
-// database models
+// Database models
 const Session = sequelize.define('Session', {
     eventName: { type: DataTypes.STRING, allowNull: false },
     hostToken: { type: DataTypes.STRING, unique: true, allowNull: false },
