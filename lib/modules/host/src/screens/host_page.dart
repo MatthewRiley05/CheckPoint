@@ -1,4 +1,4 @@
-import 'dart:async';  // Add for Timer
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:checkpoint/modules/host/src/attendance_table.dart';
@@ -20,8 +20,11 @@ class _HostPageState extends State<HostPage> {
   bool _isFormValid = false;
   bool _isEventCreated = false;
   String _qrToken = '';
-  int _qrExpiry = 60;
+  String _hostToken = '';
+  int _qrExpiry = 120;
+  List<Map<String, String>> _attendanceData = [];
   Timer? _qrTimer;
+  Timer? _attendanceTimer;
 
   final String apiBaseUrl = 'http://10.0.2.2:3000';  // For emulator
 
@@ -36,6 +39,7 @@ class _HostPageState extends State<HostPage> {
     eventController.removeListener(_validateForm);
     eventController.dispose();
     _qrTimer?.cancel();
+    _attendanceTimer?.cancel();
     super.dispose();
   }
 
@@ -64,12 +68,14 @@ class _HostPageState extends State<HostPage> {
         final data = json.decode(response.body);
         setState(() {
           _isEventCreated = true;
+          _hostToken = data['hostToken'];
           _qrToken = data['qrToken'];
-          _qrExpiry = data['qrTokenExpiry'] ?? 60;
+          _qrExpiry = data['qrTokenExpiry'] ?? 120;
         });
 
-        // Start QR rotation timer
-        //_qrTimer = Timer.periodic(Duration(seconds: _qrExpiry), (_) => _refreshQr(data['hostToken']));
+        _qrTimer = Timer.periodic(Duration(seconds: _qrExpiry), (_) => _refreshQr());
+
+        _attendanceTimer = Timer.periodic(const Duration(seconds: 5), (_) => _fetchAttendances());
       } else {
         _showError('Failed to create event: ${response.body}');
       }
@@ -78,9 +84,10 @@ class _HostPageState extends State<HostPage> {
     }
   }
 
-  Future<void> _refreshQr(String hostToken) async {
+  Future<void> _refreshQr() async {
     try {
-      final response = await http.get(Uri.parse('$apiBaseUrl/api/sessions/$hostToken/qr'));
+      final response = await http.get(Uri.parse('$apiBaseUrl/api/sessions/$_hostToken/qr'));
+      print('QR Refresh.');
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
@@ -89,6 +96,27 @@ class _HostPageState extends State<HostPage> {
       }
     } catch (e) {
       print('QR Refresh Error: $e');
+    }
+  }
+
+  Future<void> _fetchAttendances() async {
+    try {
+      final response = await http.get(Uri.parse('$apiBaseUrl/api/sessions/$_hostToken/attendances'));
+      print('Fetch Attendances Status: ${response.statusCode}');
+      print('Fetch Attendances Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          _attendanceData = (data['attendances'] as List).map<Map<String, String>>((att) => {
+            'name': att['studentName'],
+            'studentId': att['studentId'],
+            'timestamp': att['createdAt'],
+          }).toList();
+        });
+      }
+    } catch (e) {
+      print('Fetch Attendances Error: $e');
     }
   }
 
@@ -111,7 +139,9 @@ class _HostPageState extends State<HostPage> {
                 eventData: _qrToken,
                 isVisible: _isEventCreated,
               ),
-              AttendanceTable(attendanceData: const []),
+              Expanded(  // Make table take remaining space
+                child: AttendanceTable(attendanceData: _attendanceData),
+              ),
             ],
           ),
         ),
