@@ -3,6 +3,8 @@ import 'package:checkpoint/modules/student/src/qr_scanner_button.dart';
 import 'package:checkpoint/modules/student/src/student_id_input.dart';
 import 'package:checkpoint/modules/student/src/screens/qr_scanner_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class StudentPage extends StatefulWidget {
   const StudentPage({super.key});
@@ -16,6 +18,7 @@ class _StudentPageState extends State<StudentPage> {
   final TextEditingController studentIdController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isFormValid = false;
+  final String apiBaseUrl = 'http://10.0.2.2:3000';
 
   @override
   void initState() {
@@ -41,9 +44,34 @@ class _StudentPageState extends State<StudentPage> {
     );
 
     if (result != null && mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Scanned: $result')));
+      try {
+        final response = await http.post(
+          Uri.parse('$apiBaseUrl/api/check-in'),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            'qrToken': result,
+            'studentId': studentIdController.text,
+            'studentName': nameController.text,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('${data['message']} for ${data['eventName']}')),
+          );
+        } else {
+          final errorData = json.decode(response.body);
+          final error = errorData['error'] ?? 'Unknown error';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Check-in failed: $error')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error during check-in: $e')),
+        );
+      }
     }
   }
 

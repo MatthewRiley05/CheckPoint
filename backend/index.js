@@ -56,7 +56,7 @@ const verifyQR = (token) => {
 app.post('/api/sessions', async (req, res) => {
     try {
         const { eventName } = req.body;
-        const hostToken = generateToken();
+        const hostToken = generateToken(); 
         const session = await Session.create({ eventName, hostToken });
         const qrToken = generateQR(session.id);
 
@@ -135,7 +135,7 @@ app.post('/api/check-in', async (req, res) => {
     }
 });
 
-sequelize.sync().then(() => {
+sequelize.sync().then(async () => {
     app.listen(port, () => {
         console.log(`Backend listening on port ${port}`)
     })
