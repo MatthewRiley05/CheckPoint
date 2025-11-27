@@ -62,8 +62,8 @@ class _HostPageState extends State<HostPage> {
         body: json.encode({'eventName': eventName}),
       );
 
-      print('API Response Status: ${response.statusCode}');
-      print('API Response Body: ${response.body}');
+      debugPrint('API Response Status: ${response.statusCode}');
+      debugPrint('API Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -74,9 +74,15 @@ class _HostPageState extends State<HostPage> {
           _qrExpiry = data['qrTokenExpiry'] ?? 120;
         });
 
-        _qrTimer = Timer.periodic(Duration(seconds: _qrExpiry), (_) => _refreshQr());
+        _qrTimer = Timer.periodic(
+          Duration(seconds: _qrExpiry),
+          (_) => _refreshQr(),
+        );
 
-        _attendanceTimer = Timer.periodic(const Duration(seconds: 5), (_) => _fetchAttendances());
+        _attendanceTimer = Timer.periodic(
+          const Duration(seconds: 5),
+          (_) => _fetchAttendances(),
+        );
       } else {
         _showError('Failed to create event: ${response.body}');
       }
@@ -87,8 +93,10 @@ class _HostPageState extends State<HostPage> {
 
   Future<void> _refreshQr() async {
     try {
-      final response = await http.get(Uri.parse('$apiBaseUrl/api/sessions/$_hostToken/qr'));
-      print('QR Refresh.');
+      final response = await http.get(
+        Uri.parse('$apiBaseUrl/api/sessions/$_hostToken/qr'),
+      );
+      debugPrint('QR Refresh.');
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
@@ -96,28 +104,34 @@ class _HostPageState extends State<HostPage> {
         });
       }
     } catch (e) {
-      print('QR Refresh Error: $e');
+      debugPrint('QR Refresh Error: $e');
     }
   }
 
   Future<void> _fetchAttendances() async {
     try {
-      final response = await http.get(Uri.parse('$apiBaseUrl/api/sessions/$_hostToken/attendances'));
-      print('Fetch Attendances Status: ${response.statusCode}');
-      print('Fetch Attendances Body: ${response.body}');
+      final response = await http.get(
+        Uri.parse('$apiBaseUrl/api/sessions/$_hostToken/attendances'),
+      );
+      debugPrint('Fetch Attendances Status: ${response.statusCode}');
+      debugPrint('Fetch Attendances Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
-          _attendanceData = (data['attendances'] as List).map<Map<String, String>>((att) => {
-            'name': att['studentName'],
-            'studentId': att['studentId'],
-            'timestamp': att['createdAt'],
-          }).toList();
+          _attendanceData = (data['attendances'] as List)
+              .map<Map<String, String>>(
+                (att) => {
+                  'name': att['studentName'],
+                  'studentId': att['studentId'],
+                  'timestamp': att['createdAt'],
+                },
+              )
+              .toList();
         });
       }
     } catch (e) {
-      print('Fetch Attendances Error: $e');
+      debugPrint('Fetch Attendances Error: $e');
     }
   }
 
@@ -139,11 +153,9 @@ class _HostPageState extends State<HostPage> {
             children: [
               EventInput(controller: eventController),
               HostButton(isFormValid: _isFormValid, onPressed: _createEvent),
-              QrCodeDisplay(
-                eventData: _qrToken,
-                isVisible: _isEventCreated,
-              ),
-              Expanded(  // Make table take remaining space
+              QrCodeDisplay(eventData: _qrToken, isVisible: _isEventCreated),
+              Expanded(
+                // Make table take remaining space
                 child: AttendanceTable(attendanceData: _attendanceData),
               ),
             ],
