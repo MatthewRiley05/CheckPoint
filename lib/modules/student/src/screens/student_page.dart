@@ -18,7 +18,7 @@ class _StudentPageState extends State<StudentPage> {
   final TextEditingController studentIdController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isFormValid = false;
-  final String apiBaseUrl = 'http://10.0.2.2:3000';
+  final String apiBaseUrl = 'http://192.168.31.175:3000';
 
   @override
   void initState() {
@@ -58,19 +58,21 @@ class _StudentPageState extends State<StudentPage> {
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('${data['message']} for ${data['eventName']}')),
+            SnackBar(
+              content: Text('${data['message']} for ${data['eventName']}'),
+            ),
           );
         } else {
           final errorData = json.decode(response.body);
           final error = errorData['error'] ?? 'Unknown error';
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Check-in failed: $error')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Check-in failed: $error')));
         }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error during check-in: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error during check-in: $e')));
       }
     }
   }
