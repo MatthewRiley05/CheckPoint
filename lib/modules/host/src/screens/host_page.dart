@@ -1,12 +1,13 @@
-import 'dart:async';  // Add for Timer
+import 'dart:async';
 import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 
 import 'package:checkpoint/modules/host/src/attendance_table.dart';
 import 'package:checkpoint/modules/host/src/event_input.dart';
 import 'package:checkpoint/modules/host/src/host_button.dart';
 import 'package:checkpoint/modules/host/src/qr_code_display.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 class HostPage extends StatefulWidget {
   const HostPage({super.key});
@@ -23,7 +24,7 @@ class _HostPageState extends State<HostPage> {
   int _qrExpiry = 60;
   Timer? _qrTimer;
 
-  final String apiBaseUrl = 'http://10.0.2.2:3000';  // For emulator
+  final String apiBaseUrl = 'http://10.0.2.2:3000'; // For emulator
 
   @override
   void initState() {
@@ -80,7 +81,9 @@ class _HostPageState extends State<HostPage> {
 
   Future<void> _refreshQr(String hostToken) async {
     try {
-      final response = await http.get(Uri.parse('$apiBaseUrl/api/sessions/$hostToken/qr'));
+      final response = await http.get(
+        Uri.parse('$apiBaseUrl/api/sessions/$hostToken/qr'),
+      );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
@@ -93,7 +96,9 @@ class _HostPageState extends State<HostPage> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -104,13 +109,11 @@ class _HostPageState extends State<HostPage> {
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 16,
             children: [
               EventInput(controller: eventController),
               HostButton(isFormValid: _isFormValid, onPressed: _createEvent),
-              QrCodeDisplay(
-                eventData: _qrToken,
-                isVisible: _isEventCreated,
-              ),
+              QrCodeDisplay(eventData: _qrToken, isVisible: _isEventCreated),
               AttendanceTable(attendanceData: const []),
             ],
           ),
