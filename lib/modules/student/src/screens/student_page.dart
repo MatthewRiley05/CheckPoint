@@ -4,6 +4,7 @@ import 'package:checkpoint/modules/student/src/student_id_input.dart';
 import 'package:checkpoint/modules/student/src/screens/qr_scanner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 
 class StudentPage extends StatefulWidget {
@@ -18,7 +19,7 @@ class _StudentPageState extends State<StudentPage> {
   final TextEditingController studentIdController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isFormValid = false;
-  final String apiBaseUrl = 'http://10.0.2.2:3000';
+  final String apiBaseUrl = dotenv.get('API_BASE_URL', fallback: 'http://127.0.0.1:3000');
 
   @override
   void initState() {

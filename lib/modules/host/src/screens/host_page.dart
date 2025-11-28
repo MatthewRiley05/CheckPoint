@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:checkpoint/modules/host/src/attendance_table.dart';
 import 'package:checkpoint/modules/host/src/event_input.dart';
@@ -27,7 +28,7 @@ class _HostPageState extends State<HostPage> {
   Timer? _qrTimer;
   Timer? _attendanceTimer;
 
-  final String apiBaseUrl = 'http://10.0.2.2:3000'; // For emulator
+  final String apiBaseUrl = dotenv.get('API_BASE_URL', fallback: 'http://127.0.0.1:3000');
 
   @override
   void initState() {
